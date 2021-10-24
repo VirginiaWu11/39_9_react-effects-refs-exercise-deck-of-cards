@@ -18,43 +18,48 @@ const Cards = () => {
 
   useEffect(() => {
     async function drawOneCard() {
-      const response = await axios.get(`${BASE_URL}${deckId}/draw/`);
-      //   sample response:
-      //  {
-      //   "success": true,
-      //   "deck_id": "kmu8f320cvc8",
-      //   "cards": [
-      //     {
-      //       "code": "KC",
-      //       "image": "https://deckofcardsapi.com/static/img/KC.png",
-      //       "images": {
-      //         "svg": "https://deckofcardsapi.com/static/img/KC.svg",
-      //         "png": "https://deckofcardsapi.com/static/img/KC.png"
-      //       },
-      //       "value": "KING",
-      //       "suit": "CLUBS"
-      //     }
-      //   ],
-      //   "remaining": 49
-      // }
+      try {
+        const response = await axios.get(`${BASE_URL}${deckId}/draw/`);
+        //   sample response:
+        //  {
+        //   "success": true,
+        //   "deck_id": "kmu8f320cvc8",
+        //   "cards": [
+        //     {
+        //       "code": "KC",
+        //       "image": "https://deckofcardsapi.com/static/img/KC.png",
+        //       "images": {
+        //         "svg": "https://deckofcardsapi.com/static/img/KC.svg",
+        //         "png": "https://deckofcardsapi.com/static/img/KC.png"
+        //       },
+        //       "value": "KING",
+        //       "suit": "CLUBS"
+        //     }
+        //   ],
+        //   "remaining": 49
+        // }
 
-      if (response.data.remaining === 0) {
-        throw new Error("no cards remaining!");
+        if (response.data.remaining === 0) {
+          throw new Error("no cards remaining!");
+        }
+        const card = response.data.cards[0];
+        setCardsDrawn((cardsDrawn) => [
+          ...cardsDrawn,
+          {
+            id: card.code,
+            image: card.image,
+            name: `${card.value} of ${card.suit}`,
+          },
+        ]);
+      } catch (e) {
+        alert(e);
       }
-      const card = response.data.cards[0];
-      setCardsDrawn((cardsDrawn) => [
-        ...cardsDrawn,
-        {
-          id: card.code,
-          image: card.image,
-          name: `${card.value} of ${card.suit}`,
-        },
-      ]);
     }
-    drawOneCard();
+    if (deckId) {
+      drawOneCard();
+    }
   }, [count, deckId]);
 
-  console.log(deckId, cardsDrawn);
   return (
     <div className="Deck">
       <div>
