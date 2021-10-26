@@ -11,16 +11,6 @@
   margin: 0 10px;
 }
 
-.Deck-gimme:hover {
-  cursor: pointer;
-  background-color: #444;
-}
-
-.Deck-gimme:active,
-.Deck-gimme:focus {
-  outline: none;
-}
-
-.Cards-container {
+.Deck-cardarea {
   margin-top: 80px;
 }

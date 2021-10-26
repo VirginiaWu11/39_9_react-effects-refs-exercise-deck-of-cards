@@ -1,12 +1,13 @@
 import { BASE_URL } from "./constants";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Card from "./Card";
 
 const Cards = () => {
   const [deckId, setDeckId] = useState(null);
   const [cardsDrawn, setCardsDrawn] = useState([]);
-  const [count, setCount] = useState(0);
+  const [autoDraw, setAutoDraw] = useState(false);
+  let timerId = useRef(null);
 
   useEffect(() => {
     async function getShuffledDeck() {
@@ -55,20 +56,30 @@ const Cards = () => {
         alert(e);
       }
     }
-    if (deckId) {
-      drawOneCard();
+    if (autoDraw && !timerId.current) {
+      timerId.current = setInterval(async () => {
+        await drawOneCard();
+      }, 500);
     }
-  }, [count, deckId]);
+    return () => {
+      clearInterval(timerId.current);
+      timerId.current = null;
+    };
+  }, [autoDraw, deckId]);
+
+  const toggleAutoDraw = () => {
+    setAutoDraw((autoDraw) => !autoDraw);
+  };
 
   return (
     <div className="Deck">
       <div>
         <button
           className="Deck-gimme "
-          onClick={() => setCount((count) => count + 1)}
+          onClick={toggleAutoDraw}
           style={{ display: "block" }}
         >
-          Draw a Card
+          {autoDraw ? "Stop" : "Start"} Auto Draw
         </button>
       </div>
       <div className="Deck-cardarea">
