@@ -41,6 +41,7 @@ const Cards = () => {
         // }
 
         if (response.data.remaining === 0) {
+          setAutoDraw(false);
           throw new Error("no cards remaining!");
         }
         const card = response.data.cards[0];
@@ -59,7 +60,7 @@ const Cards = () => {
     if (autoDraw && !timerId.current) {
       timerId.current = setInterval(async () => {
         await drawOneCard();
-      }, 500);
+      }, 200);
     }
     return () => {
       clearInterval(timerId.current);
